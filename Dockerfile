@@ -1,6 +1,7 @@
 FROM ubuntu
 
-RUN apt-get update && \
+RUN 	apt-get update && \
 	apt-get upgrade -y && \
-	apt-get install -y openjdk-7-jdk && \
+	apt-get install python-software-properties
+	add-apt-repository ppa:webupd8team/java
 	apt-get -y install curl

@@ -1,18 +1,46 @@
-FROM ubuntu:14.04
+FROM debian:7.8
+MAINTAINER Adron Hall adronhall@gmail.com
 
-RUN apt-get update && \
-apt-get install -y curl openjdk-7-jre-headless python
+ENV \
+    ZK_RELEASE="http://www.apache.org/dist/zookeeper/zookeeper-3.4.8/zookeeper-3.4.8.tar.gz" \
+    EXHIBITOR_POM="https://raw.githubusercontent.com/Netflix/exhibitor/d911a16d704bbe790d84bbacc655ef050c1f5806/exhibitor-standalone/src/main/resources/buildscripts/standalone/maven/pom.xml" \
+    # Append "+" to ensure the package doesn't get purged
+    BUILD_DEPS="curl maven openjdk-7-jdk+" \
+    DEBIAN_FRONTEND="noninteractive"
 
-# https://www.apache.org/mirrors/dist.html
-RUN curl -fL http://apache.arvixe.com/zookeeper/zookeeper-3.4.8/zookeeper-3.4.8.tar.gz | tar xzf - -C /opt && \
-mv /opt/zookeeper-3.4.8 /opt/zookeeper
+# Use one step so we can remove intermediate dependencies and minimize size
+RUN \
+    # Install dependencies
+    apt-get update \
+    && apt-get install -y --allow-unauthenticated --no-install-recommends $BUILD_DEPS \
 
-VOLUME /tmp/zookeeper
+    # Default DNS cache TTL is -1.
+    && grep '^networkaddress.cache.ttl=' /etc/java-7-openjdk/security/java.security || echo 'networkaddress.cache.ttl=60' >> /etc/java-7-openjdk/security/java.security \
 
-COPY entrypoint.sh /
+    # Install ZK
+    && curl -Lo /tmp/zookeeper.tgz $ZK_RELEASE \
+    && mkdir -p /opt/zookeeper/transactions /opt/zookeeper/snapshots \
+    && tar -xzf /tmp/zookeeper.tgz -C /opt/zookeeper --strip=1 \
+    && rm /tmp/zookeeper.tgz \
 
-ENTRYPOINT ["/entrypoint.sh"]
+    # Install Exhibitor
+    && mkdir -p /opt/exhibitor \
+    && curl -Lo /opt/exhibitor/pom.xml $EXHIBITOR_POM \
+    && mvn -f /opt/exhibitor/pom.xml package \
+    && ln -s /opt/exhibitor/target/exhibitor*jar /opt/exhibitor/exhibitor.jar \
 
-ENV PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/zookeeper/bin
+    # Remove build-time dependencies
+    && apt-get purge -y --auto-remove $BUILD_DEPS \
+    && rm -rf /var/lib/apt/lists/*
 
-CMD ["zkServer.sh", "start-foreground"]
+# Add the wrapper script to setup configs and exec exhibitor
+ADD src/wrapper.sh /opt/exhibitor/wrapper.sh
+
+# Add the optional web.xml for authentication
+ADD src/web.xml /opt/exhibitor/web.xml
+
+USER root
+WORKDIR /opt/exhibitor
+EXPOSE 2181 2888 3888 8181
+
+ENTRYPOINT ["bash", "-ex", "/opt/exhibitor/wrapper.sh"]

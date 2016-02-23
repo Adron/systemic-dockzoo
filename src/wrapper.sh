@@ -38,40 +38,6 @@ cat <<- EOF > /opt/exhibitor/defaults.conf
 	auto-manage-instances-fixed-ensemble-size=$ZK_ENSEMBLE_SIZE
 EOF
 
-
-if [[ -n ${AWS_ACCESS_KEY_ID} ]]; then
-  cat <<- EOF > /opt/exhibitor/credentials.properties
-    com.netflix.exhibitor.s3.access-key-id=${AWS_ACCESS_KEY_ID}
-    com.netflix.exhibitor.s3.access-secret-key=${AWS_SECRET_ACCESS_KEY}
-EOF
-  S3_SECURITY="--s3credentials /opt/exhibitor/credentials.properties"
-fi
-
-if [[ -n ${S3_BUCKET} ]]; then
-  echo "backup-extra=throttle\=&bucket-name\=${S3_BUCKET}&key-prefix\=${S3_PREFIX}&max-retries\=4&retry-sleep-ms\=30000" >> /opt/exhibitor/defaults.conf
-
-  BACKUP_CONFIG="--configtype s3 --s3config ${S3_BUCKET}:${S3_PREFIX} ${S3_SECURITY} --s3region ${AWS_REGION} --s3backup true"
-else
-  BACKUP_CONFIG="--configtype file --fsconfigdir /opt/zookeeper/local_configs --filesystembackup true"
-fi
-
-if [[ -n ${ZK_PASSWORD} ]]; then
-	SECURITY="--security web.xml --realm Zookeeper:realm --remoteauth basic:zk"
-	echo "zk: ${ZK_PASSWORD},zk" > realm
-fi
-
-
-if [[ -n $HTTP_PROXY_HOST ]]; then
-    cat <<- EOF > /opt/exhibitor/proxy.properties
-      com.netflix.exhibitor.s3.proxy-host=${HTTP_PROXY_HOST}
-      com.netflix.exhibitor.s3.proxy-port=${HTTP_PROXY_PORT}
-      com.netflix.exhibitor.s3.proxy-username=${HTTP_PROXY_USERNAME}
-      com.netflix.exhibitor.s3.proxy-password=${HTTP_PROXY_PASSWORD}
-EOF
-
-    HTTP_PROXY="--s3proxy=/opt/exhibitor/proxy.properties"
-fi
-
 exec 2>&1
 
 java -jar /opt/exhibitor/exhibitor.jar \

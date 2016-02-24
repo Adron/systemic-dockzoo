@@ -31,4 +31,16 @@ To create and start a container from this image
     -e HOSTNAME=<host> \
     adron/systemic-dockzoo
 
+## Verification of Services & User Interface
+
+To verify that exhibitor has started and is available, navigate to:
+
+    http://<host>:8181
+
+For more information on Exhibitor check out the API https://github.com/Netflix/exhibitor/wiki/REST-Introduction.
+
+To check that Zookeeper is a keepin'.
+
+    echo ruok | nc <host> 2181
+
 *Author:* **Adron(-Orange)** @ **[Github](https://www.github.com/adron-orange)** or **[Twitter](https://twitter.com/adron_orange)**.

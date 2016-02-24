@@ -1,5 +1,5 @@
 FROM debian:7.8
-MAINTAINER Adron Hall adron_hall@homedepot.com
+MAINTAINER Adron Hall adronhall@gmail.com
 
 ENV \
     ZK_RELEASE="http://www.apache.org/dist/zookeeper/zookeeper-3.4.6/zookeeper-3.4.6.tar.gz" \

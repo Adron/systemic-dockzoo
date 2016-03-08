@@ -73,7 +73,6 @@ EOF
     HTTP_PROXY="--s3proxy=/opt/exhibitor/proxy.properties"
 fi
 
-
 exec 2>&1
 
 java -jar /opt/exhibitor/exhibitor.jar \

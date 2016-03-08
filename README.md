@@ -45,4 +45,4 @@ To check that Zookeeper is a keepin'.
 
     echo ruok | nc <hostname> 2181
 
-*Author(s):* [![Adron Hall](./AdronHall.png)](http://compositecode.com) @ **[Github](https://www.github.com/adron-orange)** or **[Twitter](https://twitter.com/adron_orange)**.
+*Author(s):* [![Adron Hall](./AdronHall.png)](http://compositecode.com) @ **[Github](https://www.github.com/adron)** or **[Twitter](https://twitter.com/adron)**.

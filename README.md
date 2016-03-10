@@ -1,6 +1,6 @@
 #Dockzoo
 
-[![Container Logo](https://github.com/Adron/systemic-dockzoo/blob/master/Logo.png)]()
+[![Container Logo](https://github.com/Adron/systemic-dockzoo/blob/master/Logo.png?raw=true)](https://github.com/Adron/systemic-dockzoo)
 
 [![License](https://img.shields.io/github/license/Adron/systemic-dockzoo.svg?style=flat-square)](https://github.com/Adron/systemic-dockzoo/blob/master/LICENSE)
 [![Maintenance](https://img.shields.io/maintenance/yes/2016.svg?style=flat-square)](#)
@@ -45,4 +45,4 @@ To check that Zookeeper is a keepin'.
 
     echo ruok | nc <hostname> 2181
 
-*Author(s):* [![Adron Hall](https://github.com/Adron/systemic-dockzoo/blob/master/AdronHall.png)](http://compositecode.com) @ **[Github](https://www.github.com/adron)** or **[Twitter](https://twitter.com/adron)**.
+*Author(s):* [![Adron Hall](https://github.com/Adron/systemic-dockzoo/blob/master/AdronHall.png?raw=true)](http://compositecode.com) @ **[Github](https://www.github.com/adron)** or **[Twitter](https://twitter.com/adron)**.

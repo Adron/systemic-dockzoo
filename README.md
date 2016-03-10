@@ -17,7 +17,7 @@ Create the image from this repository with:
 
 Otherwise pull the docker image itself from Docker Hub:
 
-    docker pull adron/systemic-dockzoo
+    docker pull adron/dockzoo
 
 To create and start a container from this image 
 
